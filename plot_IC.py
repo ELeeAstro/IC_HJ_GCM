@@ -26,7 +26,7 @@ print(prc[0])
 
 
 plt.ylim(1e-4,1e4)
-plt.xlim(100,4000)
+plt.xlim(1000,6000)
 plt.yscale('log')
 plt.xscale('log')
 plt.gca().invert_yaxis()

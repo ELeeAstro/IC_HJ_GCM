@@ -3,9 +3,9 @@
 ! A module that helps with grey and non-grey opacities from the literature
 ! 1. Tan & Komacek (2019)'s UHJ grey parameter fit
 ! 2. Freedman et al. (2014)'s fitting function
-! 3. Parmentier and Guillot (2014,2015) 3V band, 2IR picket fence scheme parameters, and Bond albedo function
+! 3. Valencia et al. (2013)'s fitting function
+! 4. Parmentier and Guillot (2014,2015) 3V band, 2IR picket fence scheme parameters, and Bond albedo function
 ! Can be used in 1D RCE/RT or 3D GCM codes
-! NOTE: Different schemes have different input pressures and different output k units!
 !! TODO: Interpolate Freedman et al. (2014) tables for V band Rosseland means as well
 !!!
 
@@ -176,7 +176,6 @@ contains
       k_hiP = (c6_vh+c7_vh*Tl10+c8_vh*Tl10**2) &
       &     + Pl10*(c9_vh+c10_vh*Tl10) &
       &     + met*c11_vh*(0.5_dp + onedivpi*atan((Tl10-2.5_dp)/0.2_dp))
-
     end if
 
     ! De log10
@@ -196,16 +195,11 @@ contains
   !! Calculates 3 band grey visual gamma values and 2 picket fence IR gamma values
   !! according to the coefficents and equations in:
   !! Parmentier & Menou (2014) and Parmentier et al. (2015)
-  !! NOTE: noon_longitude = sub-stellar point longitude
-  !! NOTE: This does not calculate the opacity - call k_Ross_Freedman for that
   subroutine gam_Parmentier(Teff, table_num, gam_V, Beta_V, Beta, gam_1, gam_2, gam_P, tau_lim)
     implicit none
 
     ! Input:
-    ! Tint - Internal temperature [K]
-    ! Tirr - Sub-stellar irradiation temperature [K]
-    ! lat - latitude of profile [rad]
-    ! lon - longitude of profile [rad]
+    ! Teff - Effective temperature [K]
     ! table_num - Table selection from Parmentier et al. (2015): 1 = w. TiO/VO, 2 = w.o. TiO/VO
 
     ! Output:
@@ -306,7 +300,7 @@ contains
         aB = 3.0_dp  ; bB = -0.69_dp
       end if
 
-      !gam_P coefficents
+      ! gam_P coefficents
       if (Teff <= 1400.0_dp) then
         aP = -2.36_dp
         bP = 13.92_dp
@@ -339,7 +333,6 @@ contains
     ! equivalent bandwidth value
     Beta(1) = aB + bB * l10T
     Beta(2) = 1.0_dp - Beta(1)
-    print*, aB, bB, l10T
 
     ! IR band kappa1/kappa2 ratio - Eq. 96 from Parmentier & Menou (2014)
     RT = (gam_P - 1.0_dp)/(2.0_dp*Beta(1)*Beta(2))
@@ -351,8 +344,6 @@ contains
 
     ! Calculate tau_lim parameter
     tau_lim = 1.0_dp/(gam_1*gam_2) * sqrt(gam_P/3.0_dp)
-
-
 
   end subroutine gam_Parmentier
 

@@ -127,7 +127,7 @@ contains
 
     real(kind=dp), dimension(nlay), intent(out) :: Tl
 
-    integer, parameter :: table_num = 2
+    integer, parameter :: table_num = 1
     real(kind=dp), parameter :: met = 0.0_dp
 
     real(kind=dp) :: Teff0, Teff, Tmu, Bond, Tskin
@@ -151,12 +151,9 @@ contains
 
     Teff = (Tint**4 + (1.0_dp - Bond) * mu * Tirr**4)**(1.0_dp/4.0_dp)
 
-    Teff = 2100.0_dp
-
     !! Find the V band gamma, beta and IR gamma and beta ratios for this profile
     ! Passed mu, so make lat = acos(mu) and lon = 0
     call gam_Parmentier(Teff, table_num, gam_V, Beta_V, Beta, gam_1, gam_2, gam_P, tau_lim)
-
 
     gam_V(:) = gam_V(:) / mu
 
@@ -344,16 +341,16 @@ program IC_mod_test
   ! sw Zenith angle
   mu = 1.0_dp / sqrt(3.0_dp)
 
-  Tirr = 200.0_dp ! Irradiation temperature
-  Tint = 100.0_dp ! Internal temperature
+  Tirr = 3335.0_dp ! Irradiation temperature
+  Tint = 583.0_dp ! Internal temperature
 
   Teff = (Tint**4 + mu*Tirr**4)**(1.0_dp/4.0_dp)
 
   k_IR_l(:) = 1e-3_dp
   k_V_l(:) = 6e-4_dp * sqrt(Tirr/2000.0_dp)
 
-  grav = 25.0_dp
-  fl = 1.0_dp!1.0_dp/2000.0_dp
+  grav = 10.8_dp
+  fl = 1.0_dp
   Tl = 0.0_dp
 
   iIC = 4
